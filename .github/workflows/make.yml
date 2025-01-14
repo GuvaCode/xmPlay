@@ -2,6 +2,8 @@
 name: Make
 
 on:
+  schedule:
+    - cron:  '0 0 1 * *'
   push:
     branches:
       - "**"
@@ -28,7 +30,8 @@ jobs:
       with:
         submodules: true
 
-    - name: Build on Linux
-      if: runner.os == 'Linux'
+    - name: Build
       shell: bash
-      run: bash make.sh build
+      run: |
+        sudo bash -c 'apt-get update; apt-get install -y lazarus' >/dev/null
+        instantfpc "-Fu/usr/lib/lazarus/3.0/components/lazutils" .github/workflows/make.pas
